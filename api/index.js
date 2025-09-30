@@ -2,10 +2,31 @@
 const express = require('express');
 const cors = require('cors');
 
-// Import backend routes
-const AuthController = require('../backend/src/auth/infrastructure/controllers/AuthController');
-const ProductController = require('../backend/src/products/infrastructure/controllers/ProductController');
-const CartController = require('../backend/src/cart/infrastructure/controllers/CartController');
+// Import use cases and repositories
+const SupabaseUserRepository = require('../backend/src/auth/infrastructure/repositories/SupabaseUserRepository');
+const LoginUser = require('../backend/src/auth/application/useCases/LoginUser');
+const RegisterUser = require('../backend/src/auth/application/useCases/RegisterUser');
+const JwtService = require('../backend/src/auth/infrastructure/services/JwtService');
+
+// Import controllers
+const AuthControllerClass = require('../backend/src/auth/infrastructure/controllers/AuthController');
+const ProductControllerClass = require('../backend/src/products/infrastructure/controllers/ProductController');
+const CartControllerClass = require('../backend/src/cart/infrastructure/controllers/CartController');
+
+// Initialize repositories and services
+const userRepository = new SupabaseUserRepository();
+const jwtService = new JwtService();
+
+// Initialize use cases
+const loginUser = new LoginUser(userRepository);
+const registerUser = new RegisterUser(userRepository);
+
+// Initialize controllers
+const AuthController = new AuthControllerClass(loginUser, registerUser, jwtService);
+const ProductController = new ProductControllerClass();
+const CartController = new CartControllerClass();
+
+// Auth middleware
 const authMiddleware = require('../backend/src/shared/infrastructure/middleware/AuthMiddleware');
 
 // Create Express app
