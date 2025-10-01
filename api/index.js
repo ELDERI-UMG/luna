@@ -2,27 +2,13 @@
 const express = require('express');
 const cors = require('cors');
 
-// Import use cases and repositories
-const SupabaseUserRepository = require('../backend/src/auth/infrastructure/repositories/SupabaseUserRepository');
-const LoginUser = require('../backend/src/auth/application/useCases/LoginUser');
-const RegisterUser = require('../backend/src/auth/application/useCases/RegisterUser');
-const JwtService = require('../backend/src/auth/infrastructure/services/JwtService');
-
 // Import controllers
 const AuthControllerClass = require('../backend/src/auth/infrastructure/controllers/AuthController');
 const ProductControllerClass = require('../backend/src/products/infrastructure/controllers/ProductController');
 const CartControllerClass = require('../backend/src/cart/infrastructure/controllers/CartController');
 
-// Initialize repositories and services
-const userRepository = new SupabaseUserRepository();
-const jwtService = new JwtService();
-
-// Initialize use cases
-const loginUser = new LoginUser(userRepository);
-const registerUser = new RegisterUser(userRepository);
-
-// Initialize controllers
-const AuthController = new AuthControllerClass(loginUser, registerUser, jwtService);
+// Initialize controllers (they create their own dependencies internally)
+const AuthController = new AuthControllerClass();
 const ProductController = new ProductControllerClass();
 const CartController = new CartControllerClass();
 
@@ -58,10 +44,12 @@ app.get('/api/health', (req, res) => {
 });
 
 // Auth routes
-app.post('/api/auth/register', (req, res) => AuthController.register(req, res));
-app.post('/api/auth/login', (req, res) => AuthController.login(req, res));
-app.get('/api/auth/profile', authMiddleware, (req, res) => AuthController.getProfile(req, res));
-app.post('/api/auth/google-login', (req, res) => AuthController.googleLogin(req, res));
+app.post('/api/auth/register', AuthController.register);
+app.post('/api/auth/login', AuthController.login);
+app.post('/api/auth/recover', AuthController.recover);
+app.post('/api/auth/reset-password', AuthController.resetPassword);
+app.post('/api/auth/logout', AuthController.logout);
+app.get('/api/auth/profile', authMiddleware, AuthController.profile);
 
 // Product routes
 app.get('/api/products', (req, res) => ProductController.getAll(req, res));
