@@ -59,6 +59,22 @@ class AuthController {
         `;
     }
 
+    // Handle password recovery
+    async handleRecoverPassword(email) {
+        const result = await this.user.recoverPassword(email);
+
+        if (result.success) {
+            this.showMessage(result.message || 'Instrucciones enviadas a tu email', 'success');
+            setTimeout(() => {
+                if (window.viewManager) {
+                    window.viewManager.loadView('auth/login');
+                }
+            }, 3000);
+        } else {
+            this.showMessage(result.error, 'error');
+        }
+    }
+
     // Handle login form submission
     async handleLogin(formData) {
         const email = formData.get('email');

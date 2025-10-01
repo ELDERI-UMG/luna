@@ -2,6 +2,13 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 
+// Import controllers
+const AuthController = require('./src/auth/infrastructure/controllers/AuthController');
+const authMiddleware = require('./src/shared/infrastructure/middleware/AuthMiddleware');
+
+// Initialize controllers
+const authController = new AuthController();
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -84,6 +91,14 @@ app.get('/api/health', (req, res) => {
         products_count: PRODUCTS.length
     });
 });
+
+// Auth routes
+app.post('/api/auth/register', authController.register);
+app.post('/api/auth/login', authController.login);
+app.post('/api/auth/recover', authController.recover);
+app.post('/api/auth/reset-password', authController.resetPassword);
+app.post('/api/auth/logout', authController.logout);
+app.get('/api/auth/profile', authMiddleware, authController.profile);
 
 // Get all products
 app.get('/api/products', (req, res) => {
@@ -183,12 +198,17 @@ app.get('/api/products/search', (req, res) => {
 });
 
 // 404 handler
-app.use('*', (req, res) => {
+app.use((req, res, next) => {
     res.status(404).json({
         success: false,
         error: 'Endpoint not found',
         available_endpoints: [
             'GET /api/health',
+            'POST /api/auth/register',
+            'POST /api/auth/login',
+            'POST /api/auth/recover',
+            'POST /api/auth/logout',
+            'GET /api/auth/profile',
             'GET /api/products',
             'GET /api/products/featured',
             'GET /api/products/:id',

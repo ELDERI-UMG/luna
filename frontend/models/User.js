@@ -342,6 +342,27 @@ class User {
         }
     }
 
+    // Recover password
+    async recoverPassword(email) {
+        try {
+            const response = await fetch(`${window.API_CONFIG.baseUrl}/api/auth/recover`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                return { success: true, message: data.message };
+            } else {
+                return { success: false, error: data.error || 'Error al enviar instrucciones' };
+            }
+        } catch (error) {
+            return { success: false, error: 'Error de conexión con el servidor' };
+        }
+    }
+
     // Logout
     async logout() {
         try {

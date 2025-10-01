@@ -115,6 +115,9 @@ class ViewManager {
             case 'auth/register':
                 this.attachRegisterEvents();
                 break;
+            case 'auth/recover-password':
+                this.attachRecoverPasswordEvents();
+                break;
             case 'products/list':
                 this.attachProductsEvents();
                 break;
@@ -144,7 +147,8 @@ class ViewManager {
 
     attachLoginEvents() {
         const loginForm = document.getElementById('login-form');
-        const showRegisterLink = document.getElementById('show-register');
+        const showRegisterLink = document.getElementById('register-link');
+        const forgotPasswordLink = document.getElementById('forgot-password-link');
 
         if (loginForm) {
             loginForm.addEventListener('submit', async (e) => {
@@ -160,6 +164,13 @@ class ViewManager {
             showRegisterLink.addEventListener('click', (e) => {
                 e.preventDefault();
                 this.loadView('auth/register');
+            });
+        }
+
+        if (forgotPasswordLink) {
+            forgotPasswordLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.loadView('auth/recover-password');
             });
         }
 
@@ -184,7 +195,7 @@ class ViewManager {
 
     attachRegisterEvents() {
         const registerForm = document.getElementById('register-form');
-        const showLoginLink = document.getElementById('show-login');
+        const showLoginLink = document.getElementById('login-link-from-register');
 
         if (registerForm) {
             registerForm.addEventListener('submit', async (e) => {
@@ -219,6 +230,28 @@ class ViewManager {
                     console.error('❌ Google Auth still not initialized');
                 }
             }, 2000);
+        }
+    }
+
+    attachRecoverPasswordEvents() {
+        const recoverForm = document.getElementById('recover-form');
+        const backToLoginLink = document.getElementById('back-to-login-link');
+
+        if (recoverForm) {
+            recoverForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                if (window.authController) {
+                    const email = document.getElementById('recover-email').value;
+                    await window.authController.handleRecoverPassword(email);
+                }
+            });
+        }
+
+        if (backToLoginLink) {
+            backToLoginLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.loadView('auth/login');
+            });
         }
     }
 
