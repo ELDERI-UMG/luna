@@ -175,21 +175,23 @@ class ViewManager {
         }
 
         // Initialize Google Sign-In button for login
-        console.log('🔧 Setting up Google Sign-In button...');
-        if (window.googleAuth && window.googleAuth.initialized) {
-            window.googleAuth.renderSignInButton('google-signin-btn');
-            console.log('✅ Google Sign-In button rendered immediately');
+        if (window.googleAuth && window.googleAuth.clientId) {
+            console.log('🔧 Setting up Google Sign-In button...');
+            if (window.googleAuth.initialized) {
+                window.googleAuth.renderSignInButton('google-signin-btn');
+                console.log('✅ Google Sign-In button rendered immediately');
+            } else {
+                // Wait for Google Auth to initialize
+                console.log('⏳ Waiting for Google Auth to initialize...');
+                setTimeout(() => {
+                    if (window.googleAuth && window.googleAuth.initialized) {
+                        window.googleAuth.renderSignInButton('google-signin-btn');
+                        console.log('✅ Google Sign-In button rendered after delay');
+                    }
+                }, 2000);
+            }
         } else {
-            // Wait for Google Auth to initialize
-            console.log('⏳ Waiting for Google Auth to initialize...');
-            setTimeout(() => {
-                if (window.googleAuth && window.googleAuth.initialized) {
-                    window.googleAuth.renderSignInButton('google-signin-btn');
-                    console.log('✅ Google Sign-In button rendered after delay');
-                } else {
-                    console.error('❌ Google Auth still not initialized');
-                }
-            }, 2000);
+            console.log('ℹ️ Google Auth deshabilitado');
         }
     }
 
@@ -215,21 +217,23 @@ class ViewManager {
         }
 
         // Initialize Google Sign-In button for registration
-        console.log('🔧 Setting up Google Sign-In button for register...');
-        if (window.googleAuth && window.googleAuth.initialized) {
-            window.googleAuth.renderSignInButton('google-signin-btn');
-            console.log('✅ Google Sign-In button rendered immediately');
+        if (window.googleAuth && window.googleAuth.clientId) {
+            console.log('🔧 Setting up Google Sign-In button for register...');
+            if (window.googleAuth.initialized) {
+                window.googleAuth.renderSignInButton('google-signin-btn');
+                console.log('✅ Google Sign-In button rendered immediately');
+            } else {
+                // Wait for Google Auth to initialize
+                console.log('⏳ Waiting for Google Auth to initialize...');
+                setTimeout(() => {
+                    if (window.googleAuth && window.googleAuth.initialized) {
+                        window.googleAuth.renderSignInButton('google-signin-btn');
+                        console.log('✅ Google Sign-In button rendered after delay');
+                    }
+                }, 2000);
+            }
         } else {
-            // Wait for Google Auth to initialize
-            console.log('⏳ Waiting for Google Auth to initialize...');
-            setTimeout(() => {
-                if (window.googleAuth && window.googleAuth.initialized) {
-                    window.googleAuth.renderSignInButton('google-signin-btn');
-                    console.log('✅ Google Sign-In button rendered after delay');
-                } else {
-                    console.error('❌ Google Auth still not initialized');
-                }
-            }, 2000);
+            console.log('ℹ️ Google Auth deshabilitado');
         }
     }
 
