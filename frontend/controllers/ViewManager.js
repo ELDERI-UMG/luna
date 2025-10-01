@@ -11,19 +11,7 @@ class ViewManager {
             let viewHTML;
 
             // Handle special cases with direct controller methods
-            if (viewPath === 'auth/login') {
-                if (window.authController) {
-                    viewHTML = window.authController.showLoginForm();
-                } else {
-                    throw new Error('AuthController not available');
-                }
-            } else if (viewPath === 'auth/register') {
-                if (window.authController) {
-                    viewHTML = window.authController.showRegisterForm();
-                } else {
-                    throw new Error('AuthController not available');
-                }
-            } else if (viewPath === 'products/list') {
+            if (viewPath === 'products/list') {
                 if (window.productController) {
                     await window.productController.showProducts();
                     return true;
