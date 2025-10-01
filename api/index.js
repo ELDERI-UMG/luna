@@ -63,6 +63,17 @@ app.put('/api/cart/:itemId', authMiddleware, (req, res) => CartController.update
 app.delete('/api/cart/:itemId', authMiddleware, (req, res) => CartController.removeItem(req, res));
 app.delete('/api/cart/clear', authMiddleware, (req, res) => CartController.clearCart(req, res));
 
+// Error handler
+app.use((error, req, res, next) => {
+    console.error('❌ API Error:', error);
+    console.error('Stack:', error.stack);
+    res.status(500).json({
+        success: false,
+        error: error.message || 'Internal server error',
+        details: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+});
+
 // Export as serverless function
 module.exports = (req, res) => {
     return app(req, res);
